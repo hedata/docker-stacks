@@ -58,5 +58,26 @@ The commands `ipython`, `python`, `pip`, `easy_install`, and `conda` (among othe
 
 ## Build it yourself
 cd into this repo
-docker build -t hedata/thrive_base:v002 .
-docker run -d -p 8888:8888 hedata/thrive_base:v002
+docker build -t hedata/thrive_base:v003 .
+docker run -d -p 8888:8888 hedata/thrive_base:v003
+
+## Upload to Docker hub
+we get our docker image from
+* https://hub.docker.com/r/hedata/thrive_base/
+
+if you have built a local image you can list it with
+
+```
+docker images
+```
+you can push the image to dockerhub without
+after you have login with docker login you can push it
+
+```
+docker push hedata/thrive_base:v003
+```
+
+##usefull commands:
+delete all containers
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)

@@ -9,7 +9,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     fonts-dejavu \
     gfortran \
-    gcc && apt-get clean
+    gcc \
+    libopenblas-base && apt-get clean
 
 USER jovyan
 
@@ -30,15 +31,15 @@ RUN conda install --yes \
     'dill=0.2*' \
     'numba=0.22*' \
     'bokeh=0.10*' \
+    'nose=1.3*'  \
     && conda clean -yt
 #Install Thrive specific packages
 RUN conda install  --yes -c https://conda.anaconda.org/melund toyplot \
-    && conda install --yes -c https://conda.anaconda.org/rgrout scikits.bootstrap \
     && conda install  --yes -c https://conda.anaconda.org/pymc pymc \
     && conda install  --yes -c https://conda.anaconda.org/r rpy2 \
+    && conda install --yes -c https://conda.anaconda.org/asmeurer beautiful-soup \
     && conda clean -yt
-
-
+RUN pip install scikits.bootstrap
 # R packages including IRKernel which gets installed globally.
 RUN conda config --add channels r
 RUN conda install --yes \
@@ -59,6 +60,13 @@ RUN conda install --yes \
     'r-nycflights13=0.1*' \
     'r-caret=6.0*' \
     'r-rcurl=1.95*' \
+    'r-data.table=1.9*' \
     'r-randomforest=4.6*' && conda clean -yt
 
+USER root
+COPY jupyter_notebook_config.py /home/jovyan/.jupyter/
+RUN chown -R jovyan:users /home/jovyan/.jupyter
+
 USER jovyan
+#copy our files
+ADD fig_code /home/jovyan/work/fig_code
