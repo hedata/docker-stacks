@@ -19,7 +19,7 @@ USER jovyan
 
 # Install Python 3 packages
 RUN conda install --quiet --yes \
-        'ipywidgets=5.1*' \
+        'ipywidgets=4.0.3*' \
         'pandas=0.17*' \
         'numexpr=2.5*' \
         'matplotlib=1.5*' \
@@ -38,7 +38,7 @@ RUN conda install --quiet --yes \
         'h5py=2.5*' \
         && conda clean -yt
 
-RUN jupyter nbextension enable --py widgetsnbextension --sys-prefix
+# disabled since we are using old 4.03 version - no extensions working atm RUN jupyter nbextension enable --py widgetsnbextension --sys-prefix
 
 #Install Thrive specific packages
 RUN conda install  --yes -c https://conda.anaconda.org/melund toyplot \
