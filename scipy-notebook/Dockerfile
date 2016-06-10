@@ -3,6 +3,7 @@ FROM jupyter/minimal-notebook
 
 MAINTAINER Jupyter Project <jupyter@googlegroups.com>
 
+
 USER jovyan
 
 # Install Python 3 packages

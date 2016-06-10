@@ -10,36 +10,44 @@ RUN apt-get update && \
     fonts-dejavu \
     gfortran \
     gcc \
-    libopenblas-base && apt-get clean
+    libopenblas-base \
+    libxml2-dev \
+    libxslt1-dev \
+    libav-tools && apt-get clean
 
 USER jovyan
 
 # Install Python 3 packages
-RUN conda install --yes \
-    'ipywidgets=4.0*' \
-    'pandas=0.17*' \
-    'matplotlib=1.4*' \
-    'scipy=0.16*' \
-    'seaborn=0.6*' \
-    'scikit-learn=0.16*' \
-    'scikit-image=0.11*' \
-    'sympy=0.7*' \
-    'cython=0.22*' \
-    'patsy=0.4*' \
-    'statsmodels=0.6*' \
-    'cloudpickle=0.1*' \
-    'dill=0.2*' \
-    'numba=0.22*' \
-    'bokeh=0.10*' \
-    'nose=1.3*'  \
-    && conda clean -yt
+RUN conda install --quiet --yes \
+        'ipywidgets=5.1*' \
+        'pandas=0.17*' \
+        'numexpr=2.5*' \
+        'matplotlib=1.5*' \
+        'scipy=0.17*' \
+        'seaborn=0.7*' \
+        'scikit-learn=0.17*' \
+        'scikit-image=0.11*' \
+        'sympy=0.7*' \
+        'cython=0.23*' \
+        'patsy=0.4*' \
+        'statsmodels=0.6*' \
+        'cloudpickle=0.1*' \
+        'dill=0.2*' \
+        'numba=0.23*' \
+        'bokeh=0.11*' \
+        'h5py=2.5*' \
+        && conda clean -yt
+
+RUN jupyter nbextension enable --py widgetsnbextension --sys-prefix
+
 #Install Thrive specific packages
 RUN conda install  --yes -c https://conda.anaconda.org/melund toyplot \
-    && conda install  --yes -c https://conda.anaconda.org/pymc pymc \
+    && conda install -c https://conda.binstar.org/pymc pymc \
     && conda install  --yes -c https://conda.anaconda.org/r rpy2 \
-    && conda install --yes -c https://conda.anaconda.org/asmeurer beautiful-soup \
     && conda clean -yt
+RUN pip install beautifulsoup4
 RUN pip install scikits.bootstrap
+RUN pip install plotly
 # R packages including IRKernel which gets installed globally.
 RUN conda config --add channels r
 RUN conda install --yes \
@@ -62,6 +70,13 @@ RUN conda install --yes \
     'r-rcurl=1.95*' \
     'r-data.table=1.9*' \
     'r-randomforest=4.6*' && conda clean -yt
+#install r specific packages
+#setup R configs
+RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.r-project.org'; options(repos = r);" > ~/.Rprofile
+RUN Rscript -e "install.packages('effects')"
+RUN Rscript -e "install.packages('e1071')"
+RUN Rscript -e "install.packages('cluster')"
+RUN Rscript -e "install.packages('vcd')"
 
 USER root
 COPY jupyter_notebook_config.py /home/jovyan/.jupyter/
