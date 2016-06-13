@@ -81,6 +81,10 @@ RUN Rscript -e "install.packages('vcd')"
 #install tensorflow
 RUN pip install  --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.9.0rc0-cp35-cp35m-linux_x86_64.whl
 
+#fix r fun
+RUN echo "jpeg 8*" >> /opt/conda/conda-meta/pinned
+RUN conda update --all -y
+
 USER root
 COPY jupyter_notebook_config.py /home/jovyan/.jupyter/
 RUN chown -R jovyan:users /home/jovyan/.jupyter
